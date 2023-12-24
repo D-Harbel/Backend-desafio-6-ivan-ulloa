@@ -6,9 +6,9 @@ const initPassportGithub=()=>{
 
     passport.use('github', new github.Strategy(
         {
-            clientID: "", 
-            clientSecret: "", 
-            callbackURL: "", 
+            clientID: "Iv1.4eb7afd2f382b1a5", 
+            clientSecret: "eb68b650b3e626944314bed011971c1c46d3fe12", 
+            callbackURL: "http://localhost:3000/api/github/callbackGithub",
         },
         async(accessToken, refreshToken, profile, done)=>{
             try {

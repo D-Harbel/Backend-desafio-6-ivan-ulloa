@@ -59,7 +59,6 @@ const inicializarPassport = () => {
                 let usuario;
     
                 if (username === 'adminCoder@coder.com' && password === 'adminCod3r123') {
-                    // Crea el usuario administrador directamente en lugar de consultarlo en la base de datos
                     usuario = {
                         nombre: 'Admin',
                         apellido: 'Coder',
@@ -67,7 +66,6 @@ const inicializarPassport = () => {
                         admin: true,
                     };
                 } else {
-                    // Si no es el usuario admin, búscalo en la base de datos
                     usuario = await usuariosModelo.findOne({ email: username }).lean();
                     if (!usuario) {
                         console.log('Usuario no encontrado en la base de datos');
@@ -90,18 +88,31 @@ const inicializarPassport = () => {
     ));
 
     passport.serializeUser((usuario, done) => {
-        return done(null, usuario._id);
+        if (usuario.admin) {
+            return done(null, 'admin');
+        } else {
+            return done(null, usuario._id);
+        }
     });
 
     passport.deserializeUser(async (id, done) => {
-        try {
-            let usuario = await usuariosModelo.findById(id);
-            if (!usuario) {
-                return done(new Error('Usuario no encontrado'), null);
+        if (id === 'admin') {
+            return done(null, {
+                nombre: 'Admin',
+                apellido: 'Coder',
+                email: 'adminCoder@coder.com',
+                admin: true
+            });
+        } else {
+            try {
+                let usuario = await usuariosModelo.findById(id);
+                if (!usuario) {
+                    return done(new Error('Usuario no encontrado'), null);
+                }
+                return done(null, usuario);
+            } catch (error) {
+                done(error, null);
             }
-            return done(null, usuario);
-        } catch (error) {
-            done(error, null);
         }
     });
 }
