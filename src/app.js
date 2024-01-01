@@ -22,7 +22,9 @@ const inicializarPassport = require('./config/config.passportLocal')
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
-const port = 3000;
+const port = process.env.PORT || 3000
+
+
 
 app.use(sessions(
     {
@@ -41,6 +43,11 @@ inicializarPassport()
 initPassportGithub()
 app.use(passport.initialize())
 app.use(passport.session())
+
+app.use((req, res, next) => {
+    res.locals.isAuthenticated = req.session && req.session.isAuthenticated || false;
+    next();
+});
 
 app.get('/', (req, res) => {
     const isAuthenticated = req.session.usuario;

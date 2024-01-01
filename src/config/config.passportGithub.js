@@ -3,12 +3,15 @@ const github = require('passport-github2')
 const usermodel = require('../dao/models/usermodel')
 
 const initPassportGithub=()=>{
+    const callbackURL = process.env.NODE_ENV === 'production'
+        ? 'https://url-modificable/api/github/callbackGithub'
+        : 'http://localhost:3000/api/github/callbackGithub';
 
     passport.use('github', new github.Strategy(
         {
-            clientID: "Iv1.4eb7afd2f382b1a5", 
-            clientSecret: "eb68b650b3e626944314bed011971c1c46d3fe12", 
-            callbackURL: "http://localhost:3000/api/github/callbackGithub",
+            clientID: "", 
+            clientSecret: "", 
+            callbackURL,
         },
         async(accessToken, refreshToken, profile, done)=>{
             try {

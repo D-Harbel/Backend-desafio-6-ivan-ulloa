@@ -10,7 +10,7 @@ module.exports = function (io) {
     })
 
     router.post('/login', passport.authenticate('login',{failureRedirect:'/api/sessions/errorLogin'}), async (req, res) => {
-    
+        req.session.isAuthenticated = true;
         console.log(req.user)
     
         req.session.usuario = {
